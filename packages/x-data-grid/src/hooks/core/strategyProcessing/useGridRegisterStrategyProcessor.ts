@@ -16,6 +16,6 @@ export const useGridRegisterStrategyProcessor = <
   }, [apiRef, processor, group, strategyName]);
 
   React.useEffect(() => {
-      registerPreProcessor();
+    registerPreProcessor();
   }, [registerPreProcessor]);
 };

@@ -18,8 +18,7 @@ export const useGridRegisterPipeProcessor = <
   }, [apiRef, callback, group]);
 
   React.useEffect(() => {
-   
-      registerPreProcessor();
+    registerPreProcessor();
 
     return () => {
       if (cleanup.current) {

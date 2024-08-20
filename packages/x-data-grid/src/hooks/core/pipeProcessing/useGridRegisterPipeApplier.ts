@@ -17,11 +17,8 @@ export const useGridRegisterPipeApplier = <
     cleanup.current = apiRef.current.registerPipeApplier(group, id.current, callback);
   }, [apiRef, callback, group]);
 
- 
   React.useEffect(() => {
-   
-      registerPreProcessor();
-  
+    registerPreProcessor();
 
     return () => {
       if (cleanup.current) {
