@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useFirstRender } from '../../utils/useFirstRender';
 import { GridPrivateApiCommon } from '../../../models/api/gridApiCommon';
 import { GridPipeProcessorGroup, GridPipeProcessor } from './gridPipeProcessingApi';
 
@@ -18,17 +17,9 @@ export const useGridRegisterPipeProcessor = <
     cleanup.current = apiRef.current.registerPipeProcessor(group, id.current, callback);
   }, [apiRef, callback, group]);
 
-  useFirstRender(() => {
-    registerPreProcessor();
-  });
-
-  const isFirstRender = React.useRef(true);
   React.useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-    } else {
+   
       registerPreProcessor();
-    }
 
     return () => {
       if (cleanup.current) {

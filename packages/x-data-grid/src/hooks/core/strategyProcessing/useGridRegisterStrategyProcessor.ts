@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useFirstRender } from '../../utils/useFirstRender';
 import { GridPrivateApiCommon } from '../../../models/api/gridApiCommon';
 import { GridStrategyProcessorName, GridStrategyProcessor } from './gridStrategyProcessingApi';
 
@@ -16,16 +15,7 @@ export const useGridRegisterStrategyProcessor = <
     apiRef.current.registerStrategyProcessor(strategyName, group, processor);
   }, [apiRef, processor, group, strategyName]);
 
-  useFirstRender(() => {
-    registerPreProcessor();
-  });
-
-  const isFirstRender = React.useRef(true);
   React.useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-    } else {
       registerPreProcessor();
-    }
   }, [registerPreProcessor]);
 };
