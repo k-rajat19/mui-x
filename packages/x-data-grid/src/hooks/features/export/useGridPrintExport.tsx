@@ -62,10 +62,7 @@ function buildPrintWindow(title?: string): HTMLIFrameElement {
  */
 export const useGridPrintExport = (
   apiRef: React.RefObject<GridPrivateApiCommunity>,
-  props: Pick<
-    DataGridProcessedProps,
-    'pagination' | 'columnHeaderHeight' | 'headerFilterHeight' | 'hideFooter'
-  >,
+  props: Pick<DataGridProcessedProps, 'pagination' | 'columnHeaderHeight' | 'headerFilterHeight'>,
 ): void => {
   const hasRootReference = apiRef.current.rootElementRef.current !== null;
   const logger = useGridLogger(apiRef, 'useGridPrintExport');
@@ -130,7 +127,6 @@ export const useGridPrintExport = (
         hideToolbar: false,
         includeCheckboxes: false,
         ...options,
-        hideFooter: props.hideFooter || options?.hideFooter,
       };
 
       const printDoc = printWindow.contentDocument;
@@ -157,14 +153,17 @@ export const useGridPrintExport = (
       let gridFooterElementHeight =
         gridRootElement!.querySelector<HTMLElement>(`.${gridClasses.footerContainer}`)
           ?.offsetHeight || 0;
+      const gridFooterElement = gridClone.querySelector<HTMLElement>(
+        `.${gridClasses.footerContainer}`,
+      );
 
       if (normalizeOptions.hideToolbar) {
         gridClone.querySelector(`.${gridClasses.toolbarContainer}`)?.remove();
         gridToolbarElementHeight = 0;
       }
 
-      if (normalizeOptions.hideFooter) {
-        gridClone.querySelector(`.${gridClasses.footerContainer}`)?.remove();
+      if (normalizeOptions.hideFooter && gridFooterElement) {
+        gridFooterElement.remove();
         gridFooterElementHeight = 0;
       }
 
@@ -178,14 +177,10 @@ export const useGridPrintExport = (
       // The height above does not include grid border width, so we need to exclude it
       gridClone.style.boxSizing = 'content-box';
 
-      if (!normalizeOptions.hideFooter) {
+      if (!normalizeOptions.hideFooter && gridFooterElement) {
         // the footer is always being placed at the bottom of the page as if all rows are exported
         // so if getRowsToExport is being used to only export a subset of rows then we need to
         // adjust the footer position to be correctly placed at the bottom of the grid
-        const gridFooterElement: HTMLElement | null = gridClone.querySelector(
-          `.${gridClasses.footerContainer}`,
-        )!;
-
         gridFooterElement.style.position = 'absolute';
         gridFooterElement.style.width = '100%';
         gridFooterElement.style.top = `${computedTotalHeight - gridFooterElementHeight}px`;
