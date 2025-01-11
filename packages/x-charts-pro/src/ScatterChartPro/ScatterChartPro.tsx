@@ -9,12 +9,14 @@ import { ChartsVoronoiHandler } from '@mui/x-charts/ChartsVoronoiHandler';
 import { ChartsAxis } from '@mui/x-charts/ChartsAxis';
 import { ChartsGrid } from '@mui/x-charts/ChartsGrid';
 import { ChartsLegend } from '@mui/x-charts/ChartsLegend';
+import { ChartsSurface } from '@mui/x-charts/ChartsSurface';
 import { ChartsAxisHighlight } from '@mui/x-charts/ChartsAxisHighlight';
 import { ChartsTooltip } from '@mui/x-charts/ChartsTooltip';
-import { useScatterChartProps } from '@mui/x-charts/internals';
-import { ResponsiveChartContainerPro } from '../ResponsiveChartContainerPro';
+import { useScatterChartProps, ChartsWrapper } from '@mui/x-charts/internals';
 import { ZoomSetup } from '../context/ZoomProvider/ZoomSetup';
 import { ZoomProps } from '../context/ZoomProvider';
+import { ChartDataProviderPro } from '../context/ChartDataProviderPro';
+import { useChartContainerProProps } from '../ChartContainerPro/useChartContainerProProps';
 
 export interface ScatterChartProProps extends ScatterChartProps, ZoomProps {}
 
@@ -30,11 +32,12 @@ export interface ScatterChartProProps extends ScatterChartProps, ZoomProps {}
  */
 const ScatterChartPro = React.forwardRef(function ScatterChartPro(
   inProps: ScatterChartProProps,
-  ref,
+  ref: React.Ref<SVGSVGElement>,
 ) {
   const props = useThemeProps({ props: inProps, name: 'MuiScatterChartPro' });
   const { zoom, onZoomChange, ...other } = props;
   const {
+    chartsWrapperProps,
     chartContainerProps,
     zAxisProps,
     voronoiHandlerProps,
@@ -44,33 +47,37 @@ const ScatterChartPro = React.forwardRef(function ScatterChartPro(
     overlayProps,
     legendProps,
     axisHighlightProps,
-    tooltipProps,
     children,
   } = useScatterChartProps(other);
+  const { chartDataProviderProProps, chartsSurfaceProps } = useChartContainerProProps(
+    chartContainerProps,
+    ref,
+  );
+
+  const Tooltip = props.slots?.tooltip ?? ChartsTooltip;
 
   return (
-    <ResponsiveChartContainerPro
-      ref={ref}
-      {...chartContainerProps}
-      zoom={zoom}
-      onZoomChange={onZoomChange}
-    >
-      <ZAxisContextProvider {...zAxisProps}>
-        {!props.disableVoronoi && <ChartsVoronoiHandler {...voronoiHandlerProps} />}
-        <ChartsAxis {...chartsAxisProps} />
-        <ChartsGrid {...gridProps} />
-        <g data-drawing-container>
-          {/* The `data-drawing-container` indicates that children are part of the drawing area. Ref: https://github.com/mui/mui-x/issues/13659 */}
-          <ScatterPlot {...scatterPlotProps} />
-        </g>
-        <ChartsOverlay {...overlayProps} />
-        <ChartsLegend {...legendProps} />
-        <ChartsAxisHighlight {...axisHighlightProps} />
-        {!props.loading && <ChartsTooltip {...tooltipProps} />}
-        <ZoomSetup />
-        {children}
-      </ZAxisContextProvider>
-    </ResponsiveChartContainerPro>
+    <ChartDataProviderPro {...chartDataProviderProProps} zoom={zoom} onZoomChange={onZoomChange}>
+      <ChartsWrapper {...chartsWrapperProps}>
+        {!props.hideLegend && <ChartsLegend {...legendProps} />}
+        <ChartsSurface {...chartsSurfaceProps}>
+          <ZAxisContextProvider {...zAxisProps}>
+            {!props.disableVoronoi && <ChartsVoronoiHandler {...voronoiHandlerProps} />}
+            <ChartsAxis {...chartsAxisProps} />
+            <ChartsGrid {...gridProps} />
+            <g data-drawing-container>
+              {/* The `data-drawing-container` indicates that children are part of the drawing area. Ref: https://github.com/mui/mui-x/issues/13659 */}
+              <ScatterPlot {...scatterPlotProps} />
+            </g>
+            <ChartsOverlay {...overlayProps} />
+            <ChartsAxisHighlight {...axisHighlightProps} />
+            {!props.loading && <Tooltip {...props?.slotProps?.tooltip} trigger="item" />}
+            <ZoomSetup />
+            {children}
+          </ZAxisContextProvider>
+        </ChartsSurface>
+      </ChartsWrapper>
+    </ChartDataProviderPro>
   );
 });
 
@@ -81,7 +88,7 @@ ScatterChartPro.propTypes = {
   // ----------------------------------------------------------------------
   /**
    * The configuration of axes highlight.
-   * @see See {@link https://mui.com/x/react-charts/tooltip/#highlights highlight docs} for more details.
+   * @see See {@link https://mui.com/x/react-charts/highlighting/ highlighting docs} for more details.
    * @default { x: 'none', y: 'none' }
    */
   axisHighlight: PropTypes.shape({
@@ -129,6 +136,10 @@ ScatterChartPro.propTypes = {
    */
   height: PropTypes.number,
   /**
+   * If `true`, the legend is not rendered.
+   */
+  hideLegend: PropTypes.bool,
+  /**
    * The item currently highlighted. Turns highlighting into a controlled prop.
    */
   highlightedItem: PropTypes.shape({
@@ -141,35 +152,6 @@ ScatterChartPro.propTypes = {
    * @default yAxisIds[0] The id of the first provided axis
    */
   leftAxis: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  /**
-   * @deprecated Consider using `slotProps.legend` instead.
-   */
-  legend: PropTypes.shape({
-    classes: PropTypes.object,
-    direction: PropTypes.oneOf(['column', 'row']),
-    hidden: PropTypes.bool,
-    itemGap: PropTypes.number,
-    itemMarkHeight: PropTypes.number,
-    itemMarkWidth: PropTypes.number,
-    labelStyle: PropTypes.object,
-    markGap: PropTypes.number,
-    onItemClick: PropTypes.func,
-    padding: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.shape({
-        bottom: PropTypes.number,
-        left: PropTypes.number,
-        right: PropTypes.number,
-        top: PropTypes.number,
-      }),
-    ]),
-    position: PropTypes.shape({
-      horizontal: PropTypes.oneOf(['left', 'middle', 'right']).isRequired,
-      vertical: PropTypes.oneOf(['bottom', 'middle', 'top']).isRequired,
-    }),
-    slotProps: PropTypes.object,
-    slots: PropTypes.object,
-  }),
   /**
    * If `true`, a loading overlay is displayed.
    * @default false
@@ -206,16 +188,6 @@ ScatterChartPro.propTypes = {
    */
   onZoomChange: PropTypes.func,
   /**
-   * The chart will try to wait for the parent container to resolve its size
-   * before it renders for the first time.
-   *
-   * This can be useful in some scenarios where the chart appear to grow after
-   * the first render, like when used inside a grid.
-   *
-   * @default false
-   */
-  resolveSizeBeforeRender: PropTypes.bool,
-  /**
    * Indicate which axis to display the right of the charts.
    * Can be a string (the id of the axis) or an object `ChartsYAxisProps`.
    * @default null
@@ -226,6 +198,11 @@ ScatterChartPro.propTypes = {
    * An array of [[ScatterSeriesType]] objects.
    */
   series: PropTypes.arrayOf(PropTypes.object).isRequired,
+  /**
+   * If `true`, animations are skipped.
+   * If unset or `false`, the animations respects the user's `prefers-reduced-motion` setting.
+   */
+  skipAnimation: PropTypes.bool,
   /**
    * The props used for each component slot.
    * @default {}
@@ -243,30 +220,11 @@ ScatterChartPro.propTypes = {
   ]),
   title: PropTypes.string,
   /**
-   * The configuration of the tooltip.
-   * @see See {@link https://mui.com/x/react-charts/tooltip/ tooltip docs} for more details.
-   * @default { trigger: 'item' }
-   */
-  tooltip: PropTypes.shape({
-    axisContent: PropTypes.elementType,
-    classes: PropTypes.object,
-    itemContent: PropTypes.elementType,
-    slotProps: PropTypes.object,
-    slots: PropTypes.object,
-    trigger: PropTypes.oneOf(['axis', 'item', 'none']),
-  }),
-  /**
    * Indicate which axis to display the top of the charts.
    * Can be a string (the id of the axis) or an object `ChartsXAxisProps`.
    * @default null
    */
   topAxis: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  viewBox: PropTypes.shape({
-    height: PropTypes.number,
-    width: PropTypes.number,
-    x: PropTypes.number,
-    y: PropTypes.number,
-  }),
   /**
    * Defines the maximal distance between a scatter point and the pointer that triggers the interaction.
    * If `undefined`, the radius is assumed to be infinite.
@@ -315,11 +273,11 @@ ScatterChartPro.propTypes = {
       dataKey: PropTypes.string,
       disableLine: PropTypes.bool,
       disableTicks: PropTypes.bool,
+      domainLimit: PropTypes.oneOfType([PropTypes.oneOf(['nice', 'strict']), PropTypes.func]),
       fill: PropTypes.string,
       hideTooltip: PropTypes.bool,
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       label: PropTypes.string,
-      labelFontSize: PropTypes.number,
       labelStyle: PropTypes.object,
       max: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
       min: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
@@ -334,7 +292,6 @@ ScatterChartPro.propTypes = {
         PropTypes.func,
         PropTypes.object,
       ]),
-      tickFontSize: PropTypes.number,
       tickInterval: PropTypes.oneOfType([
         PropTypes.oneOf(['auto']),
         PropTypes.array,
@@ -402,11 +359,11 @@ ScatterChartPro.propTypes = {
       dataKey: PropTypes.string,
       disableLine: PropTypes.bool,
       disableTicks: PropTypes.bool,
+      domainLimit: PropTypes.oneOfType([PropTypes.oneOf(['nice', 'strict']), PropTypes.func]),
       fill: PropTypes.string,
       hideTooltip: PropTypes.bool,
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       label: PropTypes.string,
-      labelFontSize: PropTypes.number,
       labelStyle: PropTypes.object,
       max: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
       min: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
@@ -421,7 +378,6 @@ ScatterChartPro.propTypes = {
         PropTypes.func,
         PropTypes.object,
       ]),
-      tickFontSize: PropTypes.number,
       tickInterval: PropTypes.oneOfType([
         PropTypes.oneOf(['auto']),
         PropTypes.array,
