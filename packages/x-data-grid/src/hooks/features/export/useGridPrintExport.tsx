@@ -125,6 +125,7 @@ export const useGridPrintExport = (
       const normalizeOptions = {
         copyStyles: true,
         hideToolbar: false,
+        hideFooter: false,
         includeCheckboxes: false,
         ...options,
       };
