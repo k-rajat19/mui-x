@@ -34,6 +34,11 @@ export function useDateRangeManager<TEnableAccessibleFieldDOMStructure extends b
         ...internalProps,
         ...getDateFieldInternalPropsDefaults({ defaultDates, utils, internalProps }),
       }),
+      // TODO v8: Add a real aria label before moving the opening logic to the field on range pickers.
+      internal_getOpenPickerButtonAriaLabel: ({ value, utils, localeText }) => {
+        const formattedValue = utils.isValid(value[0]) ? utils.format(value[0], 'fullDate') : null;
+        return localeText.openDatePickerDialogue(formattedValue);
+      },
     }),
     [enableAccessibleFieldDOMStructure, dateSeparator],
   );
@@ -53,8 +58,9 @@ export type UseDateRangeManagerReturnValue<TEnableAccessibleFieldDOMStructure ex
     DateRangeManagerFieldInternalPropsWithDefaults<TEnableAccessibleFieldDOMStructure>
   >;
 
-interface DateRangeManagerFieldInternalProps<TEnableAccessibleFieldDOMStructure extends boolean>
-  extends MakeOptional<
+export interface DateRangeManagerFieldInternalProps<
+  TEnableAccessibleFieldDOMStructure extends boolean,
+> extends MakeOptional<
       UseFieldInternalProps<
         PickerRangeValue,
         TEnableAccessibleFieldDOMStructure,

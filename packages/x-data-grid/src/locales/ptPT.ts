@@ -6,6 +6,8 @@ const ptPTGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Nenhuma linha',
   noResultsOverlayLabel: 'Nenhum resultado encontrado.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Densidade',
@@ -114,6 +116,7 @@ const ptPTGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Melhor que ou igual a',
   'headerFilterOperator<': 'Menor que',
   'headerFilterOperator<=': 'Menos que ou igual a',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'qualquer',

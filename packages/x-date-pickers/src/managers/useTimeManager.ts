@@ -20,7 +20,7 @@ import { PickerValue } from '../internals/models';
 export function useTimeManager<TEnableAccessibleFieldDOMStructure extends boolean = true>(
   parameters: UseTimeManagerParameters<TEnableAccessibleFieldDOMStructure> = {},
 ): UseTimeManagerReturnValue<TEnableAccessibleFieldDOMStructure> {
-  const { enableAccessibleFieldDOMStructure = true as TEnableAccessibleFieldDOMStructure } =
+  const { enableAccessibleFieldDOMStructure = true as TEnableAccessibleFieldDOMStructure, ampm } =
     parameters;
 
   return React.useMemo(
@@ -34,8 +34,14 @@ export function useTimeManager<TEnableAccessibleFieldDOMStructure extends boolea
         ...internalProps,
         ...getTimeFieldInternalPropsDefaults({ utils, internalProps }),
       }),
+      internal_getOpenPickerButtonAriaLabel: ({ value, utils, localeText }) => {
+        const formattedValue = utils.isValid(value)
+          ? utils.format(value, ampm ? 'fullTime12h' : 'fullTime24h')
+          : null;
+        return localeText.openTimePickerDialogue(formattedValue);
+      },
     }),
-    [enableAccessibleFieldDOMStructure],
+    [ampm, enableAccessibleFieldDOMStructure],
   );
 }
 
@@ -57,7 +63,8 @@ export function getTimeFieldInternalPropsDefaults(
   };
 }
 
-export interface UseTimeManagerParameters<TEnableAccessibleFieldDOMStructure extends boolean> {
+export interface UseTimeManagerParameters<TEnableAccessibleFieldDOMStructure extends boolean>
+  extends AmPmProps {
   enableAccessibleFieldDOMStructure?: TEnableAccessibleFieldDOMStructure;
 }
 
@@ -70,7 +77,7 @@ export type UseTimeManagerReturnValue<TEnableAccessibleFieldDOMStructure extends
     TimeManagerFieldInternalPropsWithDefaults<TEnableAccessibleFieldDOMStructure>
   >;
 
-interface TimeManagerFieldInternalProps<TEnableAccessibleFieldDOMStructure extends boolean>
+export interface TimeManagerFieldInternalProps<TEnableAccessibleFieldDOMStructure extends boolean>
   extends MakeOptional<
       UseFieldInternalProps<PickerValue, TEnableAccessibleFieldDOMStructure, TimeValidationError>,
       'format'

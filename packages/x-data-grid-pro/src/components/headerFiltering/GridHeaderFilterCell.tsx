@@ -1,6 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { styled } from '@mui/material/styles';
 import {
   unstable_useForkRef as useForkRef,
   unstable_composeClasses as composeClasses,
@@ -22,18 +23,22 @@ import {
   GridFilterInputSingleSelect,
   gridFilterModelSelector,
   gridFilterableColumnLookupSelector,
-  GridPinnedColumnPosition,
+  gridClasses,
 } from '@mui/x-data-grid';
 import {
+  PinnedColumnPosition,
   GridStateColDef,
+  GridFilterInputValueProps,
   useGridPrivateApiContext,
   gridHeaderFilteringEditFieldSelector,
   gridHeaderFilteringMenuSelector,
   isNavigationKey,
-  shouldCellShowLeftBorder,
-  shouldCellShowRightBorder,
+  attachPinnedStyle,
+  vars,
 } from '@mui/x-data-grid/internals';
+import { useRtl } from '@mui/system/RtlProvider';
 import { forwardRef } from '@mui/x-internals/forwardRef';
+import { inputBaseClasses } from '@mui/material/InputBase';
 import { useGridRootProps } from '../../hooks/utils/useGridRootProps';
 import { DataGridProProcessedProps } from '../../models/dataGridProProps';
 import { GridHeaderFilterMenuContainer } from './GridHeaderFilterMenuContainer';
@@ -55,19 +60,53 @@ export interface GridHeaderFilterCellProps extends Pick<GridStateColDef, 'header
   item: GridFilterItem;
   showClearIcon?: boolean;
   InputComponentProps: GridFilterOperator['InputComponentProps'];
-  pinnedPosition?: GridPinnedColumnPosition;
+  pinnedPosition?: PinnedColumnPosition;
+  pinnedOffset?: number;
   style?: React.CSSProperties;
-  indexInSection: number;
-  sectionLength: number;
-  gridHasFiller: boolean;
+  showLeftBorder: boolean;
+  showRightBorder: boolean;
 }
 
 type OwnerState = DataGridProProcessedProps & {
   colDef: GridColDef;
-  pinnedPosition?: GridPinnedColumnPosition;
+  pinnedPosition?: PinnedColumnPosition;
   showRightBorder: boolean;
   showLeftBorder: boolean;
 };
+
+const StyledInputComponent = styled(GridFilterInputValue, {
+  name: 'MuiDataGrid',
+  slot: 'ColumnHeaderFilterInput',
+})({
+  flex: 1,
+  marginRight: vars.spacing(0.5),
+  marginBottom: vars.spacing(-0.25),
+  '& input[type="number"], & input[type="date"], & input[type="datetime-local"]': {
+    '&[value=""]:not(:focus)': {
+      color: 'transparent',
+    },
+  },
+  [`& .${inputBaseClasses.input}`]: {
+    fontSize: '14px',
+  },
+  [`.${gridClasses['root--densityCompact']} & .${inputBaseClasses.input}`]: {
+    paddingTop: vars.spacing(0.5),
+    paddingBottom: vars.spacing(0.5),
+    height: 23,
+  },
+});
+
+const OperatorLabel = styled('span', {
+  name: 'MuiDataGrid',
+  slot: 'ColumnHeaderFilterOperatorLabel',
+})({
+  flex: 1,
+  marginRight: vars.spacing(0.5),
+  color: vars.colors.foreground.muted,
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+});
 
 const useUtilityClasses = (ownerState: OwnerState) => {
   const { colDef, classes, showRightBorder, showLeftBorder, pinnedPosition } = ownerState;
@@ -75,24 +114,26 @@ const useUtilityClasses = (ownerState: OwnerState) => {
   const slots = {
     root: [
       'columnHeader',
+      'columnHeader--filter',
       colDef.headerAlign === 'left' && 'columnHeader--alignLeft',
       colDef.headerAlign === 'center' && 'columnHeader--alignCenter',
       colDef.headerAlign === 'right' && 'columnHeader--alignRight',
       'withBorderColor',
       showRightBorder && 'columnHeader--withRightBorder',
       showLeftBorder && 'columnHeader--withLeftBorder',
-      pinnedPosition === 'left' && 'columnHeader--pinnedLeft',
-      pinnedPosition === 'right' && 'columnHeader--pinnedRight',
+      pinnedPosition === PinnedColumnPosition.LEFT && 'columnHeader--pinnedLeft',
+      pinnedPosition === PinnedColumnPosition.RIGHT && 'columnHeader--pinnedRight',
     ],
+    input: ['columnHeaderFilterInput'],
+    operatorLabel: ['columnHeaderFilterOperatorLabel'],
   };
 
   return composeClasses(slots, getDataGridUtilityClass, classes);
 };
 
-const emptyFieldSx = {
-  [`& input[value=""]:not(:focus)`]: { color: 'transparent' },
-};
-const defaultInputComponents: { [key in GridColType]: React.JSXElementConstructor<any> | null } = {
+const DEFAULT_INPUT_COMPONENTS: {
+  [key in GridColType]: React.JSXElementConstructor<GridFilterInputValueProps> | null;
+} = {
   string: GridFilterInputValue,
   number: GridFilterInputValue,
   date: GridFilterInputDate,
@@ -102,6 +143,7 @@ const defaultInputComponents: { [key in GridColType]: React.JSXElementConstructo
   actions: null,
   custom: null,
 };
+
 const GridHeaderFilterCell = forwardRef<HTMLDivElement, GridHeaderFilterCellProps>((props, ref) => {
   const {
     colIndex,
@@ -113,16 +155,17 @@ const GridHeaderFilterCell = forwardRef<HTMLDivElement, GridHeaderFilterCellProp
     item,
     headerFilterMenuRef,
     InputComponentProps,
-    showClearIcon = true,
+    showClearIcon = false,
     pinnedPosition,
+    pinnedOffset,
     style: styleProp,
-    indexInSection,
-    sectionLength,
-    gridHasFiller,
+    showLeftBorder,
+    showRightBorder,
     ...other
   } = props;
 
   const apiRef = useGridPrivateApiContext();
+  const isRtl = useRtl();
   const columnFields = useGridSelector(apiRef, gridVisibleColumnFieldsSelector);
   const rootProps = useGridRootProps();
   const cellRef = React.useRef<HTMLDivElement>(null);
@@ -162,7 +205,7 @@ const GridHeaderFilterCell = forwardRef<HTMLDivElement, GridHeaderFilterCellProp
 
   const InputComponent =
     colDef.filterable || isFilterReadOnly
-      ? (currentOperator.InputComponent ?? defaultInputComponents[colDef.type as GridColType])
+      ? (currentOperator.InputComponent ?? DEFAULT_INPUT_COMPONENTS[colDef.type as GridColType])
       : null;
 
   const clearFilterItem = React.useCallback(() => {
@@ -282,15 +325,6 @@ const GridHeaderFilterCell = forwardRef<HTMLDivElement, GridHeaderFilterCellProp
     [onMouseDown, onKeyDown, publish],
   );
 
-  const showLeftBorder = shouldCellShowLeftBorder(pinnedPosition, indexInSection);
-  const showRightBorder = shouldCellShowRightBorder(
-    pinnedPosition,
-    indexInSection,
-    sectionLength,
-    rootProps.showCellVerticalBorder,
-    gridHasFiller,
-  );
-
   const ownerState: OwnerState = {
     ...rootProps,
     pinnedPosition,
@@ -301,26 +335,48 @@ const GridHeaderFilterCell = forwardRef<HTMLDivElement, GridHeaderFilterCellProp
 
   const classes = useUtilityClasses(ownerState as OwnerState);
 
-  const isNoInputOperator = currentOperator.requiresFilterValue === false;
-
-  const isApplied = item?.value !== undefined || isNoInputOperator;
-
   const label =
     currentOperator.headerLabel ??
     apiRef.current.getLocaleText(
       `headerFilterOperator${capitalize(item.operator)}` as 'headerFilterOperatorContains',
     );
 
+  const isNoInputOperator = currentOperator.requiresFilterValue === false;
+  const isApplied = item?.value !== undefined || isNoInputOperator;
   const isFilterActive = isApplied || hasFocus;
+
+  const headerFilterMenu = (
+    <GridHeaderFilterMenuContainer
+      operators={filterOperators}
+      item={item}
+      field={colDef.field}
+      disabled={isFilterReadOnly}
+      applyFilterChanges={apiRef.current.upsertFilterItem}
+      headerFilterMenuRef={headerFilterMenuRef}
+      buttonRef={buttonRef}
+      showClearItem={!showClearIcon && isApplied}
+      clearFilterItem={clearFilterItem}
+    />
+  );
+
+  const clearButton =
+    showClearIcon && isApplied ? (
+      <GridHeaderFilterClearButton onClick={clearFilterItem} disabled={isFilterReadOnly} />
+    ) : null;
 
   return (
     <div
       className={clsx(classes.root, headerClassName)}
-      style={{
-        height,
-        width,
-        ...styleProp,
-      }}
+      style={attachPinnedStyle(
+        {
+          height,
+          width,
+          ...styleProp,
+        },
+        isRtl,
+        pinnedPosition,
+        pinnedOffset,
+      )}
       role="columnheader"
       aria-colindex={colIndex + 1}
       aria-label={headerFilterComponent == null ? (colDef.headerName ?? colDef.field) : undefined}
@@ -329,61 +385,56 @@ const GridHeaderFilterCell = forwardRef<HTMLDivElement, GridHeaderFilterCellProp
       ref={handleRef}
     >
       {headerFilterComponent}
-      {InputComponent && headerFilterComponent === undefined ? (
+      {headerFilterComponent === undefined ? (
         <React.Fragment>
-          <InputComponent
-            apiRef={apiRef}
-            item={item}
-            inputRef={inputRef}
-            applyValue={apiRef.current.upsertFilterItem}
-            onFocus={() => apiRef.current.startHeaderFilterEditMode(colDef.field)}
-            onBlur={(event: React.FocusEvent) => {
-              apiRef.current.stopHeaderFilterEditMode();
-              // Blurring an input element should reset focus state only if `relatedTarget` is not the header filter cell
-              if (!event.relatedTarget?.className.includes('columnHeader')) {
-                apiRef.current.setState((state) => ({
-                  ...state,
-                  focus: {
-                    cell: null,
-                    columnHeader: null,
-                    columnHeaderFilter: null,
-                    columnGroupHeader: null,
-                  },
-                }));
-              }
-            }}
-            label={capitalize(label)}
-            placeholder=""
-            isFilterActive={isFilterActive}
-            clearButton={
-              showClearIcon && isApplied ? (
-                <GridHeaderFilterClearButton
-                  onClick={clearFilterItem}
-                  disabled={isFilterReadOnly}
-                />
-              ) : null
-            }
-            disabled={isFilterReadOnly || isNoInputOperator}
-            tabIndex={-1}
-            InputLabelProps={null}
-            sx={
-              colDef.type === 'date' || colDef.type === 'dateTime' || colDef.type === 'number'
-                ? emptyFieldSx
-                : undefined
-            }
-            {...(isNoInputOperator ? { value: '' } : {})}
-            {...currentOperator?.InputComponentProps}
-            {...InputComponentProps}
-          />
-          <GridHeaderFilterMenuContainer
-            operators={filterOperators!}
-            item={item}
-            field={colDef.field}
-            disabled={isFilterReadOnly}
-            applyFilterChanges={apiRef.current.upsertFilterItem}
-            headerFilterMenuRef={headerFilterMenuRef}
-            buttonRef={buttonRef}
-          />
+          {isNoInputOperator ? (
+            <React.Fragment>
+              <OperatorLabel className={classes.operatorLabel}>{label}</OperatorLabel>
+              {clearButton}
+              {headerFilterMenu}
+            </React.Fragment>
+          ) : null}
+          {InputComponent && !isNoInputOperator ? (
+            <StyledInputComponent
+              as={InputComponent}
+              className={classes.input}
+              apiRef={apiRef}
+              item={item}
+              inputRef={inputRef}
+              applyValue={apiRef.current.upsertFilterItem}
+              onFocus={() => apiRef.current.startHeaderFilterEditMode(colDef.field)}
+              onBlur={(event: React.FocusEvent) => {
+                apiRef.current.stopHeaderFilterEditMode();
+                // Blurring an input element should reset focus state only if `relatedTarget` is not the header filter cell
+                if (!event.relatedTarget?.className.includes('columnHeader')) {
+                  apiRef.current.setState((state) => ({
+                    ...state,
+                    focus: {
+                      cell: null,
+                      columnHeader: null,
+                      columnHeaderFilter: null,
+                      columnGroupHeader: null,
+                    },
+                  }));
+                }
+              }}
+              isFilterActive={isFilterActive}
+              headerFilterMenu={headerFilterMenu}
+              clearButton={clearButton}
+              disabled={isFilterReadOnly || isNoInputOperator}
+              tabIndex={-1}
+              slotProps={{
+                root: {
+                  size: 'small',
+                  label: capitalize(label),
+                  placeholder: '',
+                } as any,
+              }}
+              {...(isNoInputOperator ? { value: '' } : {})}
+              {...currentOperator?.InputComponentProps}
+              {...InputComponentProps}
+            />
+          ) : null}
         </React.Fragment>
       ) : null}
     </div>
@@ -397,7 +448,6 @@ GridHeaderFilterCell.propTypes = {
   // ----------------------------------------------------------------------
   colDef: PropTypes.object.isRequired,
   colIndex: PropTypes.number.isRequired,
-  gridHasFiller: PropTypes.bool.isRequired,
   hasFocus: PropTypes.bool,
   /**
    * Class name added to the column header cell.
@@ -407,17 +457,58 @@ GridHeaderFilterCell.propTypes = {
     current: PropTypes.object,
   }).isRequired,
   height: PropTypes.number.isRequired,
-  indexInSection: PropTypes.number.isRequired,
-  InputComponentProps: PropTypes.object,
+  InputComponentProps: PropTypes.shape({
+    apiRef: PropTypes.shape({
+      current: PropTypes.object.isRequired,
+    }),
+    applyValue: PropTypes.func,
+    className: PropTypes.string,
+    clearButton: PropTypes.node,
+    disabled: PropTypes.bool,
+    focusElementRef: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.shape({
+        current: PropTypes.any.isRequired,
+      }),
+    ]),
+    headerFilterMenu: PropTypes.node,
+    inputRef: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.shape({
+        current: (props, propName) => {
+          if (props[propName] == null) {
+            return null;
+          }
+          if (typeof props[propName] !== 'object' || props[propName].nodeType !== 1) {
+            return new Error(`Expected prop '${propName}' to be of type Element`);
+          }
+          return null;
+        },
+      }),
+    ]),
+    isFilterActive: PropTypes.bool,
+    item: PropTypes.shape({
+      field: PropTypes.string.isRequired,
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      operator: PropTypes.string.isRequired,
+      value: PropTypes.any,
+    }),
+    onBlur: PropTypes.func,
+    onFocus: PropTypes.func,
+    slotProps: PropTypes.object,
+    tabIndex: PropTypes.number,
+  }),
   item: PropTypes.shape({
     field: PropTypes.string.isRequired,
     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     operator: PropTypes.string.isRequired,
     value: PropTypes.any,
   }).isRequired,
-  pinnedPosition: PropTypes.oneOf(['left', 'right']),
-  sectionLength: PropTypes.number.isRequired,
+  pinnedOffset: PropTypes.number,
+  pinnedPosition: PropTypes.oneOf([0, 1, 2, 3]),
   showClearIcon: PropTypes.bool,
+  showLeftBorder: PropTypes.bool.isRequired,
+  showRightBorder: PropTypes.bool.isRequired,
   sortIndex: PropTypes.number,
   style: PropTypes.object,
   tabIndex: PropTypes.oneOf([-1, 0]).isRequired,

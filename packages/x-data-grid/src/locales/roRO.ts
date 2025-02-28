@@ -6,6 +6,8 @@ const roROGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Lipsă date',
   noResultsOverlayLabel: 'Nu au fost găsite rezultate.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Înălțime rând',
@@ -114,6 +116,7 @@ const roROGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Mai mare sau egal cu',
   'headerFilterOperator<': 'Mai mic decât',
   'headerFilterOperator<=': 'Mai mic sau egal cu',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'Aleatoriu',

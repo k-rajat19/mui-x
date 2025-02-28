@@ -25,6 +25,8 @@ const beBYGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Няма радкоў',
   noResultsOverlayLabel: 'Дадзеныя не знойдзены.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Вышыня радка',
@@ -136,6 +138,7 @@ const beBYGrid: Partial<GridLocaleText> = {
   // 'headerFilterOperator>=': 'Greater than or equal to',
   // 'headerFilterOperator<': 'Less than',
   // 'headerFilterOperator<=': 'Less than or equal to',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'усякі',

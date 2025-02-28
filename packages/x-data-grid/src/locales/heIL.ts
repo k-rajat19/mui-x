@@ -6,6 +6,8 @@ const heILGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'אין שורות',
   noResultsOverlayLabel: 'לא נמצאו תוצאות.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'צפיפות',
@@ -113,6 +115,7 @@ const heILGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'גדול שווה ל-',
   'headerFilterOperator<': 'קטן מ-',
   'headerFilterOperator<=': 'קטן שווה ל-',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'כל ערך',

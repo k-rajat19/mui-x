@@ -6,6 +6,8 @@ const bgBGGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Няма редове',
   noResultsOverlayLabel: 'Няма намерени резултати.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Гъстота',
@@ -112,6 +114,7 @@ const bgBGGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'По-голямо или равно на',
   'headerFilterOperator<': 'По-малко от',
   'headerFilterOperator<=': 'По-малко или равно на',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'всякакви',

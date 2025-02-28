@@ -6,6 +6,8 @@ const trTRGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Satır yok',
   noResultsOverlayLabel: 'Sonuç bulunamadı.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Yoğunluk',
@@ -113,6 +115,7 @@ const trTRGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Büyük veya eşit',
   'headerFilterOperator<': 'Küçüktür',
   'headerFilterOperator<=': 'Küçük veya eşit',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'herhangi',

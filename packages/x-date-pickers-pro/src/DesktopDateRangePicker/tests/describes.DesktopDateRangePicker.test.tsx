@@ -11,7 +11,7 @@ import {
   getFieldSectionsContainer,
 } from 'test/utils/pickers';
 import { DesktopDateRangePicker } from '@mui/x-date-pickers-pro/DesktopDateRangePicker';
-import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
+import { MultiInputDateRangeField } from '@mui/x-date-pickers-pro/MultiInputDateRangeField';
 import { PickerNonNullableRangeValue, PickerRangeValue } from '@mui/x-date-pickers/internals';
 import { describeConformance } from 'test/utils/describeConformance';
 
@@ -28,6 +28,8 @@ describe('<DesktopDateRangePicker /> - Describes', () => {
     clock,
     componentFamily: 'picker',
     views: ['day'],
+    variant: 'desktop',
+    fieldType: 'single-input',
   }));
 
   describeConformance(<DesktopDateRangePicker />, () => ({
@@ -52,6 +54,10 @@ describe('<DesktopDateRangePicker /> - Describes', () => {
     type: 'date-range',
     variant: 'desktop',
     initialFocus: 'start',
+    fieldType: 'multi-input',
+    defaultProps: {
+      slots: { field: MultiInputDateRangeField },
+    },
     clock,
     values: [
       // initial start and end dates
@@ -108,10 +114,7 @@ describe('<DesktopDateRangePicker /> - Describes', () => {
     type: 'date-range',
     variant: 'desktop',
     initialFocus: 'start',
-    isSingleInput: true,
-    defaultProps: {
-      slots: { field: SingleInputDateRangeField },
-    },
+    fieldType: 'single-input',
     clock,
     values: [
       // initial start and end dates

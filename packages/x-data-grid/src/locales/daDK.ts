@@ -6,6 +6,8 @@ const daDKGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Ingen rækker',
   noResultsOverlayLabel: 'Ingen resultater',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Tæthed',
@@ -113,6 +115,7 @@ const daDKGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Større end eller lig med',
   'headerFilterOperator<': 'Mindre end',
   'headerFilterOperator<=': 'Mindre end eller lig med',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'hvilken som helst',

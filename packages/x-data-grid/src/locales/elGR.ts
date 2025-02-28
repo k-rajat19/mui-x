@@ -6,6 +6,8 @@ const elGRGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Δεν υπάρχουν καταχωρήσεις',
   noResultsOverlayLabel: 'Δεν βρέθηκαν αποτελέσματα.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Ύψος σειράς',
@@ -113,6 +115,7 @@ const elGRGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Μεγαλύτερο ή ίσο με',
   'headerFilterOperator<': 'Μικρότερο από',
   'headerFilterOperator<=': 'Μικρότερο ή ίσο με',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'οποιοδήποτε',

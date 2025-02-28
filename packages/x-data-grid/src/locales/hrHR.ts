@@ -6,6 +6,8 @@ const hrHRGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Nema redova',
   noResultsOverlayLabel: 'Nema rezultata.',
+  noColumnsOverlayLabel: 'Nema stupaca',
+  noColumnsOverlayManageColumns: 'Upravljaj stupcima',
 
   // Density selector toolbar button text
   toolbarDensity: 'Gustoća',
@@ -120,6 +122,7 @@ const hrHRGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Veće ili jednako',
   'headerFilterOperator<': 'Manje od',
   'headerFilterOperator<=': 'Manje od ili jednako',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'bilo koji',

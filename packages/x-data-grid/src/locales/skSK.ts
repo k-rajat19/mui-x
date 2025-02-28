@@ -6,6 +6,8 @@ const skSKGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Žiadne záznamy',
   noResultsOverlayLabel: 'Nenašli sa žadne výsledky.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Hustota',
@@ -120,6 +122,7 @@ const skSKGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Väčší ako alebo rovný',
   'headerFilterOperator<': 'Menší ako',
   'headerFilterOperator<=': 'Menší ako alebo rovný',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'akýkoľvek',

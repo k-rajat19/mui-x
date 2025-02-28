@@ -17,6 +17,8 @@ export interface GridLocaleText {
   // Root
   noRowsLabel: string;
   noResultsOverlayLabel: string;
+  noColumnsOverlayLabel: string;
+  noColumnsOverlayManageColumns: string;
 
   // Density selector toolbar button text
   toolbarDensity: React.ReactNode;
@@ -123,6 +125,7 @@ export interface GridLocaleText {
   'headerFilterOperator>=': string;
   'headerFilterOperator<': string;
   'headerFilterOperator<=': string;
+  headerFilterClear: string;
 
   // Filter values text
   filterValueAny: string;

@@ -18,8 +18,9 @@ import type { Validator } from '../../../validation';
 import type { UseFieldStateResponse } from './useFieldState';
 import type { UseFieldCharacterEditingResponse } from './useFieldCharacterEditing';
 import { PickersSectionElement, PickersSectionListRef } from '../../../PickersSectionList';
-import { ExportedUseClearableFieldProps } from '../../../hooks/useClearableField';
 import { FormProps, InferNonNullablePickerValue, PickerValidValue } from '../../models';
+import type { ExportedPickerFieldUIProps } from '../../components/PickerFieldUI';
+import { UseLocalizationContextReturnValue } from '../useUtils';
 
 export interface UseFieldParams<
   TValue extends PickerValidValue,
@@ -34,6 +35,9 @@ export interface UseFieldParams<
   fieldValueManager: FieldValueManager<TValue>;
   validator: Validator<TValue, InferError<TInternalProps>, TInternalProps>;
   valueType: PickerValueType;
+  getOpenPickerButtonAriaLabel: (
+    parameters: UseLocalizationContextReturnValue & { value: TValue },
+  ) => string;
 }
 
 export interface UseFieldInternalProps<
@@ -119,12 +123,24 @@ export interface UseFieldInternalProps<
    * @default false
    */
   autoFocus?: boolean;
+  /**
+   * If `true`, the component is displayed in focused state.
+   */
+  focused?: boolean;
 }
 
 export interface UseFieldCommonAdditionalProps
-  extends Required<Pick<UseFieldInternalProps<any, any, any>, 'disabled' | 'readOnly'>> {}
+  extends Required<
+    Pick<UseFieldInternalProps<any, any, any>, 'disabled' | 'readOnly' | 'autoFocus'>
+  > {
+  /**
+   * The aria label to set on the button that opens the picker.
+   */
+  openPickerAriaLabel: string;
+}
 
-export interface UseFieldCommonForwardedProps extends ExportedUseClearableFieldProps {
+export interface UseFieldCommonForwardedProps
+  extends Pick<ExportedPickerFieldUIProps, 'clearable' | 'onClear'> {
   onKeyDown?: React.KeyboardEventHandler;
   error?: boolean;
 }
@@ -137,9 +153,9 @@ export type UseFieldForwardedProps<TEnableAccessibleFieldDOMStructure extends bo
 
 export interface UseFieldV6ForwardedProps {
   inputRef?: React.Ref<HTMLInputElement>;
-  onBlur?: () => void;
+  onBlur?: React.FocusEventHandler;
   onClick?: React.MouseEventHandler;
-  onFocus?: () => void;
+  onFocus?: React.FocusEventHandler;
   onPaste?: React.ClipboardEventHandler<HTMLDivElement>;
   placeholder?: string;
 }
@@ -152,15 +168,15 @@ interface UseFieldV6AdditionalProps
     >
   > {
   enableAccessibleFieldDOMStructure: false;
+  focused?: boolean;
 }
 
 export interface UseFieldV7ForwardedProps {
   focused?: boolean;
-  autoFocus?: boolean;
   sectionListRef?: React.Ref<PickersSectionListRef>;
-  onBlur?: () => void;
+  onBlur?: React.FocusEventHandler;
   onClick?: React.MouseEventHandler;
-  onFocus?: () => void;
+  onFocus?: React.FocusEventHandler;
   onInput?: React.FormEventHandler<HTMLDivElement>;
   onPaste?: React.ClipboardEventHandler<HTMLDivElement>;
 }
@@ -173,6 +189,7 @@ interface UseFieldV7AdditionalProps {
   value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   areAllSectionsEmpty: boolean;
+  focused: boolean;
 }
 
 export type UseFieldResponse<

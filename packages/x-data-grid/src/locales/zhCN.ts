@@ -6,6 +6,8 @@ const zhCNGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: '没有数据。',
   noResultsOverlayLabel: '未找到数据。',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: '表格密度',
@@ -112,6 +114,7 @@ const zhCNGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': '大于或等于',
   'headerFilterOperator<': '小于',
   'headerFilterOperator<=': '小于或等于',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: '任何',

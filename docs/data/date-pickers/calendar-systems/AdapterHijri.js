@@ -24,16 +24,6 @@ const cacheRtl = createCache({
 
 function ButtonDateTimeField(props) {
   const { internalProps, forwardedProps } = useSplitFieldProps(props, 'date');
-  const {
-    InputProps,
-    slotProps,
-    slots,
-    ownerState,
-    label,
-    focused,
-    name,
-    ...other
-  } = forwardedProps;
 
   const pickerContext = usePickerContext();
   const parsedFormat = useParsedFormat();
@@ -51,13 +41,15 @@ function ButtonDateTimeField(props) {
 
   return (
     <Button
-      {...other}
+      {...forwardedProps}
       variant="outlined"
       color={hasValidationError ? 'error' : 'primary'}
-      ref={InputProps?.ref}
+      className={pickerContext.rootClassName}
+      sx={pickerContext.rootSx}
+      ref={pickerContext.triggerRef}
       onClick={() => pickerContext.setOpen((prev) => !prev)}
     >
-      {label ? `${label}: ${valueStr}` : valueStr}
+      {pickerContext.label ? `${pickerContext.label}: ${valueStr}` : valueStr}
     </Button>
   );
 }

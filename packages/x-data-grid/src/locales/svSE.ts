@@ -6,6 +6,8 @@ const svSEGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Inga rader',
   noResultsOverlayLabel: 'Inga resultat funna.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Densitet',
@@ -113,6 +115,7 @@ const svSEGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Större eller lika med',
   'headerFilterOperator<': 'Mindre än',
   'headerFilterOperator<=': 'Mindre eller lika med',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'något',

@@ -6,6 +6,8 @@ const fiFIGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Ei rivejä',
   noResultsOverlayLabel: 'Ei tuloksia.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Tiiveys',
@@ -113,6 +115,7 @@ const fiFIGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Enemmän tai yhtä paljon kuin',
   'headerFilterOperator<': 'Vähemmän kuin',
   'headerFilterOperator<=': 'Vähemmän tai yhtä paljon kuin',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'mikä tahansa',

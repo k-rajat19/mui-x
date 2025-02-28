@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { styled, SxProps, Theme } from '@mui/system';
 import composeClasses from '@mui/utils/composeClasses';
-import { vars } from '../../constants/cssVariables';
 import type { DataGridProcessedProps } from '../../models/props/DataGridProps';
+import { vars } from '../../constants/cssVariables';
 import { getDataGridUtilityClass } from '../../constants/gridClasses';
 import { useGridRootProps } from '../../hooks/utils/useGridRootProps';
 
@@ -23,7 +23,6 @@ const useUtilityClasses = (ownerState: OwnerState) => {
 const GridPanelContentRoot = styled('div', {
   name: 'MuiDataGrid',
   slot: 'PanelContent',
-  overridesResolver: (props, styles) => styles.panelContent,
 })<{ ownerState: OwnerState }>({
   display: 'flex',
   flexDirection: 'column',

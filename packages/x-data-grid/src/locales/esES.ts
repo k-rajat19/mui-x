@@ -6,6 +6,8 @@ const esESGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Sin filas',
   noResultsOverlayLabel: 'Resultados no encontrados',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Densidad',
@@ -114,6 +116,7 @@ const esESGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Es mayor o igual que',
   'headerFilterOperator<': 'Es menor que',
   'headerFilterOperator<=': 'Es menor o igual que',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'cualquiera',

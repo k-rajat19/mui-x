@@ -4,6 +4,8 @@ export const GRID_DEFAULT_LOCALE_TEXT: GridLocaleText = {
   // Root
   noRowsLabel: 'No rows',
   noResultsOverlayLabel: 'No results found.',
+  noColumnsOverlayLabel: 'No columns',
+  noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Density',
@@ -112,6 +114,7 @@ export const GRID_DEFAULT_LOCALE_TEXT: GridLocaleText = {
   'headerFilterOperator>=': 'Greater than or equal to',
   'headerFilterOperator<': 'Less than',
   'headerFilterOperator<=': 'Less than or equal to',
+  headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'any',

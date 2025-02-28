@@ -6,6 +6,8 @@ const nlNLGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Geen resultaten.',
   noResultsOverlayLabel: 'Geen resultaten gevonden.',
+  noColumnsOverlayLabel: 'Geen kolommen',
+  noColumnsOverlayManageColumns: 'Kolommen beheren',
 
   // Density selector toolbar button text
   toolbarDensity: 'Grootte',
@@ -113,6 +115,7 @@ const nlNLGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Is groter dan of gelijk aan',
   'headerFilterOperator<': 'Is kleiner dan',
   'headerFilterOperator<=': 'Is kleiner dan of gelijk aan',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'alles',

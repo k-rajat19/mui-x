@@ -47,6 +47,11 @@ const keys = {
       selectedOpacity: '--DataGrid-t-colors-interactive-selected-opacity',
     },
   },
+  header: {
+    background: {
+      base: '--DataGrid-t-header-background-base',
+    },
+  },
   cell: {
     background: {
       pinned: '--DataGrid-t-cell-background-pinned',
@@ -94,12 +99,39 @@ const keys = {
   },
   shadows: {
     base: '--DataGrid-t-shadows-base',
+    overlay: '--DataGrid-t-shadows-overlay',
   },
   zIndex: {
     panel: '--DataGrid-t-z-index-panel',
     menu: '--DataGrid-t-z-index-menu',
   },
+} as const;
+
+export type GridCSSVariablesInterface = {
+  [E in CreateObjectEntries<typeof keys> as E['value']]: string | number;
 };
+
+type Entry = { key: string; value: unknown };
+type EmptyEntry<TValue> = { key: ''; value: TValue };
+
+type CreateObjectEntries<TValue, TValueInitial = TValue> = TValue extends object
+  ? {
+      [TKey in keyof TValue]-?: TKey extends string
+        ? OmitItself<TValue[TKey], TValueInitial> extends infer TNestedValue
+          ? TNestedValue extends Entry
+            ? {
+                key: `${TKey}.${TNestedValue['key']}`;
+                value: TNestedValue['value'];
+              }
+            : never
+          : never
+        : never;
+    }[keyof TValue]
+  : EmptyEntry<TValue>;
+
+type OmitItself<TValue, TValueInitial> = TValue extends TValueInitial
+  ? EmptyEntry<TValue>
+  : CreateObjectEntries<TValue, TValueInitial>;
 
 const values = wrap(keys);
 

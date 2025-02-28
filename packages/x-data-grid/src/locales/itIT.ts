@@ -6,6 +6,8 @@ const itITGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Nessun record',
   noResultsOverlayLabel: 'Nessun record trovato.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Densità',
@@ -113,6 +115,7 @@ const itITGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Maggiore o uguale a',
   'headerFilterOperator<': 'Minore di',
   'headerFilterOperator<=': 'Minore o uguale a',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'qualunque',

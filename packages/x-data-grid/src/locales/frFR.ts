@@ -6,6 +6,8 @@ const frFRGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'Pas de résultats',
   noResultsOverlayLabel: 'Aucun résultat.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'Densité',
@@ -113,6 +115,7 @@ const frFRGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'Est supérieur ou égal à',
   'headerFilterOperator<': 'Est inférieur à',
   'headerFilterOperator<=': 'Est inférieur ou égal à',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'tous',

@@ -6,6 +6,8 @@ const arSDGrid: Partial<GridLocaleText> = {
   // Root
   noRowsLabel: 'لا توجد صفوف',
   noResultsOverlayLabel: 'لم يتم العثور على نتائج.',
+  // noColumnsOverlayLabel: 'No columns',
+  // noColumnsOverlayManageColumns: 'Manage columns',
 
   // Density selector toolbar button text
   toolbarDensity: 'الكثافة',
@@ -113,6 +115,7 @@ const arSDGrid: Partial<GridLocaleText> = {
   'headerFilterOperator>=': 'أكبر من او يساوي',
   'headerFilterOperator<': 'اصغر من',
   'headerFilterOperator<=': 'اصغر من او يساوي',
+  // headerFilterClear: 'Clear filter',
 
   // Filter values text
   filterValueAny: 'أي',

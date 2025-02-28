@@ -9,7 +9,7 @@ import { getLabel } from '../internals/getLabel';
 import { isCartesianSeriesType } from '../internals/isCartesian';
 import { utcFormatter } from './utils';
 import { useXAxes, useXAxis, useYAxes, useYAxis } from '../hooks/useAxis';
-import { useZAxis } from '../hooks/useZAxis';
+import { useZAxes } from '../hooks/useZAxis';
 import {
   selectorChartsInteractionXAxis,
   selectorChartsInteractionYAxis,
@@ -53,7 +53,7 @@ export function useAxisTooltip(): UseAxisTooltipReturnValue | null {
   const { xAxis } = useXAxes();
   const { yAxis } = useYAxes();
 
-  const { zAxis, zAxisIds } = useZAxis();
+  const { zAxis, zAxisIds } = useZAxes();
   const colorProcessors = useColorProcessor();
 
   if (axisData === null) {
@@ -123,7 +123,10 @@ export function useAxisTooltip(): UseAxisTooltipReturnValue | null {
     ((v: string | number | Date) =>
       usedAxis.scaleType === 'utc' ? utcFormatter(v) : v.toLocaleString());
 
-  const axisFormattedValue = axisFormatter(axisValue, { location: 'tooltip' });
+  const axisFormattedValue = axisFormatter(axisValue, {
+    location: 'tooltip',
+    scale: usedAxis.scale,
+  });
 
   return {
     axisDirection: xAxisHasData ? 'x' : 'y',

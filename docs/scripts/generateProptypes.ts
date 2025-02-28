@@ -70,12 +70,9 @@ async function generateProptypes(project: XTypeScriptProject, sourceFile: string
         'unstableEndFieldRef',
         'series',
         'axis',
-        'bottomAxis',
-        'topAxis',
-        'leftAxis',
-        'rightAxis',
         'plugins',
         'seriesConfig',
+        'manager',
       ];
       if (propsToNotResolve.includes(name)) {
         return false;
